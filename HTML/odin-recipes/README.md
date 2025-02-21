@@ -1,1 +1,1 @@
-lsThis is a project to test my skills in HTML. This involves working with Git and Github, utilizing HTML elements, and brining it all together to build a webiste. 
+This is a project to test my skills in HTML. This involves working with Git and Github, utilizing HTML elements, and brining it all together to build a webiste. 
