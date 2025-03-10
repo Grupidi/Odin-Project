@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Page Title</title>
+    <title>Rock Paper Scissors Game</title>
+    <style>
+        button {
+            font-size: 18px;
+            margin: 10px;
+            padding: 10px 20px;
+        }
+        #score, #result {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 60px;
+        }
+    </style>
 </head>
 <body>
+    <h1>Rock Paper Scissors</h1>
+    <div>
+        <button id="rock">Rock</button>
+        <button id="paper">Paper</button>
+        <button id="scissors">Scissors</button>
+    </div>
+    <div id="score">Human: 0 | Computer: 0</div>
+    <div id="result">Game ready - make your first choice!</div>
     <script src="RockPaperScissors.js"></script>
 </body>
 </html>

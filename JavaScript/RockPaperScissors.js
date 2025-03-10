@@ -7,93 +7,97 @@ let computerScore = parseInt(localStorage.getItem('computerScore')) || 0;
  * @returns {string} The computer's choice: 'rock', 'paper', or 'scissors'
  */
 function getComputerChoice() {
-    let computerInput = Math.random();
-    let choice;
-    if (computerInput < 0.33) {
-        choice = 'rock';
-    } else if (computerInput < 0.66) {
-        choice = 'paper';
-    } else {
-        choice = 'scissors';
-    }
-
-    return choice;
+    const computerInput = Math.random();
+    if (computerInput < 0.33) return 'rock';
+    else if (computerInput < 0.66) return 'paper';
+    else return 'scissors';
 }
 
 /**
- * Prompts the human player for their choice and validates the input
- * @returns {string} The human player's validated choice: 'rock', 'paper', or 'scissors'
- */
-function getHumanChoice() {
-    let choice = prompt("Enter your choice (rock/paper/scissors):").toLowerCase().trim();
-
-    while (choice !== 'rock' && choice !== 'paper' && choice !== 'scissors') {
-        choice = prompt("Invalid choice. Please enter rock, paper, or scissors:").toLowerCase().trim();
-    }
-
-    return choice;
-}
-
-/**
- * Compares the choices of the human and computer players to determine the winner
- * @param {string} humanChoice - The human player's choice
- * @param {string} computerChoice - The computer's choice
- * @returns {string} The result of the round
+ * Compares player choices and updates scores
+ * @param {string} humanChoice 
+ * @param {string} computerChoice 
+ * @returns {string} Result message
  */
 function compareChoices(humanChoice, computerChoice) {
-    let result;
-    
     if (humanChoice === computerChoice) {
-        result = "It's a tie!";
+        return "It's a tie!";
     } else if (
         (humanChoice === "rock" && computerChoice === "scissors") ||
         (humanChoice === "paper" && computerChoice === "rock") ||
         (humanChoice === "scissors" && computerChoice === "paper")
     ) {
-        result = "You win!";
         humanScore++;
+        localStorage.setItem('humanScore', humanScore);
+        return "You win this round!";
     } else {
-        result = "Computer wins!";
         computerScore++;
+        localStorage.setItem('computerScore', computerScore);
+        return "Computer wins this round!";
     }
-    
-    // Save updated scores to localStorage
-    localStorage.setItem('humanScore', humanScore);
-    localStorage.setItem('computerScore', computerScore);
-    
-    console.log(`Result: ${result}`);
-    
-    return result;
 }
 
 /**
- * Plays a full game of Rock Paper Scissors (5 rounds)
- * Updates and displays scores after each round
- * Resets scores and localStorage after the game
+ * Updates the score display using YOUR existing #score div
  */
-function playGame() {
-    while (humanScore < 5 && computerScore < 5) {
-        let humanChoice = getHumanChoice();
-        console.log("You chose: " + humanChoice);
-        let computerChoice = getComputerChoice();
-        console.log("Computer chose: " + computerChoice);
-        compareChoices(humanChoice, computerChoice);
-        console.log("The score is Human: " + humanScore + " Computer: " + computerScore);
-    }
-    
-    // Determine the winner
-    let winner = humanScore === 5 ? "Human" : "Computer";
-    console.log(`Game over! ${winner} wins!`);
-    console.log(`Final score - Human: ${humanScore} Computer: ${computerScore}`);
-    
-    // Reset scores and clear localStorage
-    humanScore = 0;
-    computerScore = 0;
-    localStorage.removeItem('humanScore');
-    localStorage.removeItem('computerScore');
-    console.log("Scores have been reset for the next game.");
+function updateScoreBoard() {
+    const scoreDiv = document.getElementById('score');
+    scoreDiv.textContent = `Human: ${humanScore} | Computer: ${computerScore}`;
 }
 
+/**
+ * Plays a round and checks for a winner
+ * @param {string} playerSelection 
+ */
+function playRound(playerSelection) {
+    if (humanScore >= 5 || computerScore >= 5) return;
 
-// Start the game
-playGame();
+    const computerChoice = getComputerChoice();
+    const result = compareChoices(playerSelection, computerChoice);
+    const resultDiv = document.getElementById('result');
+
+    resultDiv.innerHTML = `
+        You chose: ${playerSelection}<br>
+        Computer chose: ${computerChoice}<br>
+        ${result}
+    `;
+
+    updateScoreBoard();
+
+    // Check for game winner
+    if (humanScore >= 5) {
+        resultDiv.innerHTML += `<br><strong>GAME OVER! You win!</strong>`;
+    } else if (computerScore >= 5) {
+        resultDiv.innerHTML += `<br><strong>GAME OVER! Computer wins!</strong>`;
+    }
+}
+
+/**
+ * Resets the game
+ */
+function resetGame() {
+    humanScore = 0;
+    computerScore = 0;
+    localStorage.setItem('humanScore', humanScore);
+    localStorage.setItem('computerScore', computerScore);
+    updateScoreBoard();
+    document.getElementById('result').textContent = "Game ready - make your first choice!";
+}
+
+// Initialize game
+document.addEventListener('DOMContentLoaded', () => {
+    // Add event listeners to buttons
+    document.getElementById('rock').addEventListener('click', () => playRound('rock'));
+    document.getElementById('paper').addEventListener('click', () => playRound('paper'));
+    document.getElementById('scissors').addEventListener('click', () => playRound('scissors'));
+
+    // Add reset button (matches your existing style)
+    const resetBtn = document.createElement('button');
+    resetBtn.textContent = "Reset Game";
+    resetBtn.style.marginTop = "20px";
+    resetBtn.addEventListener('click', resetGame);
+    document.body.appendChild(resetBtn);
+
+    // Initialize score display
+    updateScoreBoard();
+});
