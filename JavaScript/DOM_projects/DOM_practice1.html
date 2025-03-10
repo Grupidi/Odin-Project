@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping list example</title>
+    <style>
+      li {
+        margin-bottom: 10px;
+      }
+
+      li button {
+        font-size: 12px;
+        margin-left: 20px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>My shopping list</h1>
+
+    <div>
+      <label for="item">Enter a new item:</label>
+      <input type="text" name="item" id="item">
+      <button id="addItemButton">Add item</button>
+    </div>
+
+    <ul id="shoppingList">
+
+    </ul>
+
+    <script>
+      // Step 1: Create variables for the list, input, and button
+      const list = document.getElementById('shoppingList');
+      const input = document.getElementById('item');
+      const button = document.getElementById('addItemButton');
+
+      // Step 2: Create a function to handle adding new items
+      button.addEventListener('click', function () {
+        // Get the input value
+        const inputValue = input.value;
+
+        // Clear the input field
+        input.value = '';
+
+        // Check if the input is empty, don't add an empty item
+        if (inputValue.trim() === '') {
+          return;
+        }
+
+        // Create new elements: li, span, and button
+        const listItem = document.createElement('li');
+        const span = document.createElement('span');
+        const deleteButton = document.createElement('button');
+
+        // Set their content
+        span.textContent = inputValue;
+        deleteButton.textContent = 'Delete';
+
+        // Append span and delete button to the list item
+        listItem.appendChild(span);
+        listItem.appendChild(deleteButton);
+
+        // Append the list item to the unordered list
+        list.appendChild(listItem);
+
+        // Add event listener to the delete button to remove the item
+        deleteButton.addEventListener('click', function () {
+          list.removeChild(listItem);
+        });
+
+        // Focus back on the input field for convenience
+        input.focus();
+      });
+    </script>
+  </body>
+</html>
